@@ -3,43 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUIMICOS DEL CAUCA MEXICO Presupuesto 2026</title>
+    <title>QUIMICOS DEL CAUCA MEXICO (Presupuesto 2026)</title>
     
     <!-- Cargar React y ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Cargar Babel para traducir JSX -->
+    <!-- Cargar Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <!-- Cargar Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Ajustes finos para asegurar que se vea igual al diseño */
-        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        .note-card { 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .note-card:hover { 
+            transform: scale(1.02); 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15); 
+            z-index: 70; 
+        }
+
+        /* Scrollbar discreta */
+        .custom-scrollbar::-webkit-scrollbar { width: 12px; height: 12px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #d1d5db; } 
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #64748b; border-radius: 6px; border: 3px solid #d1d5db; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-300 h-screen overflow-hidden text-slate-800">
 
-    <div id="root"></div>
+    <div id="root" class="h-full"></div>
 
     <script type="text/babel">
-        // --- Definición de Iconos (SVG inline para no depender de librerías externas complejas) ---
-        const ChevronRight = ({ size = 24, strokeWidth = 2, className = "" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
+        // --- Iconos ---
+        const ChevronRight = ({ size = 16, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
         );
-        const ChevronLeft = ({ size = 24, strokeWidth = 2, className = "" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>
+        const ChevronDown = ({ size = 16, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>
         );
-        const ChevronDown = ({ size = 24, strokeWidth = 2, className = "" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>
+        const ChevronLeft = ({ size = 16, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>
         );
         const BarChart3 = ({ size = 24, className = "" }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
         );
 
-        // --- Componente Principal ---
+        // --- Flechas Decorativas SVG ---
+        const ArrowLeft = ({ colorClass }) => (
+            <svg width="50" height="20" viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-1/2 -translate-y-1/2 -right-8 ${colorClass}`} style={{filter: 'drop-shadow(1px 1px 0px white)'}}>
+                <path d="M2 10H48" stroke="currentColor" strokeWidth="2"/>
+                <path d="M42 4L48 10L42 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="2" cy="10" r="3" fill="currentColor" />
+            </svg>
+        );
+
+        const ArrowRight = ({ colorClass }) => (
+            <svg width="50" height="20" viewBox="0 0 50 20" fill="none" xmlns="http://www.w3.org/2000/svg" className={`absolute top-1/2 -translate-y-1/2 -left-8 ${colorClass}`} style={{filter: 'drop-shadow(1px 1px 0px white)'}}>
+                <path d="M48 10H2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M8 4L2 10L8 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="48" cy="10" r="3" fill="currentColor" />
+            </svg>
+        );
+
+        // --- Componente de Nota Lateral ---
+        const SideNote = ({ note, align }) => {
+            if (!note) return null;
+            
+            const isLeft = align === 'left';
+            const textColorClass = note.colorClass.replace('border', 'text');
+            
+            return (
+                <div className={`absolute top-1/2 -translate-y-1/2 ${isLeft ? 'right-4' : 'left-4'} z-20`}>
+                    <div className={`note-card bg-white border-l-[6px] ${note.colorClass} rounded py-3 px-4 w-[280px] relative`}>
+                        <h4 className="font-bold text-slate-800 text-lg mb-1 leading-tight">{note.title}</h4>
+                        <p className="text-slate-700 leading-snug text-base font-medium">{note.text}</p>
+                        
+                        {isLeft ? (
+                            <ArrowLeft colorClass={textColorClass} />
+                        ) : (
+                            <ArrowRight colorClass={textColorClass} />
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
         const FinancialReport = () => {
             const [showMonths, setShowMonths] = React.useState(false);
             const [expandedRows, setExpandedRows] = React.useState({});
@@ -48,21 +102,19 @@
                 setExpandedRows(prev => ({ ...prev, [id]: !prev[id] }));
             };
 
-            // Helper para construir arrays con patrones cambiantes
-            const buildMonthArray = (val1, count1, val2, count2, val3 = null, count3 = 0) => {
+            const buildMonthArray = (val1, count1, val2, count2) => {
                 let arr = Array(count1).fill(val1);
                 if (count2 > 0) arr = arr.concat(Array(count2).fill(val2));
-                if (count3 > 0 && val3 !== null) arr = arr.concat(Array(count3).fill(val3));
                 return arr;
             };
 
-            // --- 1. LÓGICA DE VOLÚMENES ---
+            // --- DATOS ---
             const lasDirectas = buildMonthArray(350, 5, 400, 7);
             const lasMaquila = Array(12).fill(150);
             const lasTotalMonthly = lasDirectas.map((val, i) => val + lasMaquila[i]);
             const lasTotalYear = lasTotalMonthly.reduce((a, b) => a + b, 0);
 
-            const sles70 = buildMonthArray(240, 5, 350, 1, 400, 6);
+            const sles70 = buildMonthArray(240, 5, 350, 1).concat(Array(6).fill(400));
             const sles28 = buildMonthArray(450, 5, 1000, 7);
             const lessTotalMonthly = sles70.map((val, i) => val + sles28[i]);
             const lessTotalYear = lessTotalMonthly.reduce((a, b) => a + b, 0);
@@ -70,133 +122,143 @@
             const grandTotalVolMonthly = lasTotalMonthly.map((val, i) => val + lessTotalMonthly[i]);
             const grandTotalVolYear = grandTotalVolMonthly.reduce((a, b) => a + b, 0);
 
-            // --- 2. LÓGICA DE P&L ---
-            const salesMonthly = buildMonthArray(1472.931, 5, 2220.081, 1, 2317.081, 6);
+            const salesMonthly = buildMonthArray(1472.931, 5, 2220.081, 1).concat(Array(6).fill(2317.081));
             const totalSalesYear = salesMonthly.reduce((a, b) => a + b, 0);
+
+            // --- Notas ---
+            const rowNotes = {
+                'v2': { // LESS
+                    left: { title: "LESS 70", text: "Inicio ventas. Homologación Unilever/Aguaviento.", colorClass: "border-blue-600" },
+                    right: { title: "LESS 28", text: "Crecimiento en nuevos clientes en desarrollo", colorClass: "border-emerald-600" }
+                },
+                'pl9': { // Gastos Operativos
+                    right: { title: "Eficiencia", text: "Estabilidad en costos y gastos operacionales.", colorClass: "border-indigo-600" }
+                },
+                'pl11': { // No Operacionales
+                    left: { title: "Factoring", text: "Estabilidad Cap. Trabajo 2º Semestre.", colorClass: "border-amber-600" }
+                }
+            };
 
             const dataStructure = [
                 {
-                category: "1. Volúmenes de Venta (Ton)",
-                sectionType: 'volume',
-                rows: [
-                    { 
-                    id: 'v1', 
-                    concept: "Ventas TOTALES LAS", 
-                    type: "volume", 
-                    monthly: lasTotalMonthly, 
-                    total: lasTotalYear,
-                    hasDetail: true,
-                    subRows: [
-                        { id: 'v1_1', concept: "LAS Directas", type: "volume", monthly: lasDirectas, total: lasDirectas.reduce((a,b)=>a+b,0) },
-                        { id: 'v1_2', concept: "Maquila LAS", type: "volume", monthly: lasMaquila, total: lasMaquila.reduce((a,b)=>a+b,0) }
+                    category: "Volúmenes de Venta (Ton)",
+                    sectionType: 'volume',
+                    rows: [
+                        { 
+                            id: 'v1', concept: "Ventas TOTALES LAS", type: "volume", monthly: lasTotalMonthly, total: lasTotalYear, hasDetail: true,
+                            subRows: [
+                                { id: 'v1_1', concept: "LAS Directas", type: "volume", monthly: lasDirectas, total: lasDirectas.reduce((a,b)=>a+b,0) },
+                                { id: 'v1_2', concept: "Maquila LAS", type: "volume", monthly: lasMaquila, total: lasMaquila.reduce((a,b)=>a+b,0) }
+                            ]
+                        },
+                        { 
+                            id: 'v2', concept: "Ventas TOTALES LESS", type: "volume", monthly: lessTotalMonthly, total: lessTotalYear, hasDetail: true,
+                            subRows: [
+                                { id: 'v2_1', concept: "SLES 70", type: "volume", monthly: sles70, total: sles70.reduce((a,b)=>a+b,0) },
+                                { id: 'v2_2', concept: "SLES 28", type: "volume", monthly: sles28, total: sles28.reduce((a,b)=>a+b,0) }
+                            ]
+                        },
+                        { id: 'v3', concept: "VENTAS TOTALES", type: "volume", monthly: grandTotalVolMonthly, total: grandTotalVolYear, bold: true, highlight: true },
                     ]
-                    },
-                    { 
-                    id: 'v2', 
-                    concept: "Ventas TOTALES LESS", 
-                    type: "volume", 
-                    monthly: lessTotalMonthly, 
-                    total: lessTotalYear,
-                    hasDetail: true,
-                    subRows: [
-                        { id: 'v2_1', concept: "SLES 70", type: "volume", monthly: sles70, total: sles70.reduce((a,b)=>a+b,0) },
-                        { id: 'v2_2', concept: "SLES 28", type: "volume", monthly: sles28, total: sles28.reduce((a,b)=>a+b,0) }
-                    ]
-                    },
-                    { id: 'v3', concept: "VENTAS TOTALES", type: "volume", monthly: grandTotalVolMonthly, total: grandTotalVolYear, bold: true, highlight: true },
-                ]
                 },
                 {
-                category: "2. Estado de Resultados (Miles de USD)",
-                sectionType: 'financial',
-                rows: [
-                    { id: 'pl1', concept: "Ingresos Operacionales LASS", type: "thousands", monthly: buildMonthArray(640.581, 5, 726.081, 7), total: 8285.5 },
-                    { id: 'pl2', concept: "Ingresos Operacionales LESS", type: "thousands", monthly: buildMonthArray(832.350, 5, 1494.000, 1, 1591.000, 6), total: 15201.8 },
-                    { id: 'pl3', concept: "Total Ventas", type: "thousands", monthly: salesMonthly, total: totalSalesYear, bold: true, highlight: true },
-                    
-                    { id: 'pl4', concept: "(-) Costo de Ventas", type: "thousands", monthly: buildMonthArray(1134.204, 5, 1718.104, 1, 1795.902, 6), total: 18164.5, textRed: true },
-                    { id: 'pl5', concept: "(-) Costos Fijos", type: "thousands", monthly: Array(12).fill(273.322), total: 3279.9, textRed: true },
-                    
-                    { id: 'pl6', concept: "Utilidad Bruta", type: "thousands", monthly: buildMonthArray(65.405, 5, 228.655, 1, 247.857, 6), total: 2042.8, bold: true, isMajorSubtotal: true },
-                    
-                    { id: 'pl7', concept: "(-) Gastos de Ventas", type: "thousands", monthly: Array(12).fill(21.689), total: 260.3, textRed: true },
-                    { id: 'pl8', concept: "(-) Gastos de Admin.", type: "thousands", monthly: Array(12).fill(7.260), total: 87.1, textRed: true },
-                    { id: 'pl9', concept: "Total Gastos Operativos", type: "thousands", monthly: Array(12).fill(28.949), total: 347.4, textRed: true, bold: true },
-                    
-                    { id: 'pl10', concept: "Utilidad Operacional (EBIT)", type: "thousands", monthly: buildMonthArray(36.456, 5, 199.706, 1, 218.908, 6), total: 1695.4, bold: true, isMajorSubtotal: true, border: true },
-                    
-                    { id: 'pl11', concept: "(-) Egresos No Operacionales", type: "thousands", monthly: buildMonthArray(70.344, 5, 79.927, 7), total: 911.2, textRed: true },
-                    
-                    { id: 'pl12', concept: "Utilidad Antes de Impuestos", type: "thousands", monthly: buildMonthArray(-33.888, 5, 119.779, 1, 138.981, 6), total: 784.2, bold: true },
-                    
-                    { id: 'pl13', concept: "(-) Estimación Imp. Renta", type: "thousands", monthly: buildMonthArray(-10.166, 5, 35.934, 1, 41.694, 6), total: 235.3, textRed: true },
-                    
-                    { id: 'pl14', concept: "Utilidad Neta", type: "thousands", monthly: buildMonthArray(-23.722, 5, 83.845, 1, 97.287, 6), total: 549.0, bold: true, isMajorSubtotal: true, border: true },
-                ]
+                    category: "Estado de Resultados (Miles de USD)",
+                    sectionType: 'financial',
+                    rows: [
+                        { id: 'pl1', concept: "Ingresos Operacionales LASS", type: "thousands", monthly: buildMonthArray(640.581, 5, 726.081, 7), total: 8285.5 },
+                        { id: 'pl2', concept: "Ingresos Operacionales LESS", type: "thousands", monthly: buildMonthArray(832.350, 5, 1494.000, 1).concat(Array(6).fill(1591.000)), total: 15201.8 },
+                        { id: 'pl3', concept: "Total Ventas", type: "thousands", monthly: salesMonthly, total: totalSalesYear, bold: true, highlight: true },
+                        { id: 'pl4', concept: "(-) Costo de Ventas", type: "thousands", monthly: buildMonthArray(1134.204, 5, 1718.104, 1).concat(Array(6).fill(1795.902)), total: 18164.5, textRed: true },
+                        { id: 'pl5', concept: "(-) Costos Fijos", type: "thousands", monthly: Array(12).fill(273.322), total: 3279.9, textRed: true },
+                        { id: 'pl6', concept: "Utilidad Bruta", type: "thousands", monthly: buildMonthArray(65.405, 5, 228.655, 1).concat(Array(6).fill(247.857)), total: 2042.8, bold: true, isMajorSubtotal: true },
+                        { id: 'pl7', concept: "(-) Gastos de Ventas", type: "thousands", monthly: Array(12).fill(21.689), total: 260.3, textRed: true },
+                        { id: 'pl8', concept: "(-) Gastos de Admin.", type: "thousands", monthly: Array(12).fill(7.260), total: 87.1, textRed: true },
+                        { id: 'pl9', concept: "Total Gastos Operativos", type: "thousands", monthly: Array(12).fill(28.949), total: 347.4, textRed: true, bold: true },
+                        { id: 'pl10', concept: "Utilidad Operacional (EBIT)", type: "thousands", monthly: buildMonthArray(36.456, 5, 199.706, 1).concat(Array(6).fill(218.908)), total: 1695.4, bold: true, isMajorSubtotal: true, border: true },
+                        { id: 'pl11', concept: "(-) Egresos No Operacionales", type: "thousands", monthly: buildMonthArray(70.344, 5, 79.927, 7), total: 911.2, textRed: true },
+                        { id: 'pl12', concept: "Utilidad Antes de Impuestos", type: "thousands", monthly: buildMonthArray(-33.888, 5, 119.779, 1).concat(Array(6).fill(138.981)), total: 784.2, bold: true },
+                        { id: 'pl13', concept: "(-) Estimación Imp. Renta", type: "thousands", monthly: buildMonthArray(-10.166, 5, 35.934, 1).concat(Array(6).fill(41.694)), total: 235.3, textRed: true },
+                        { id: 'pl14', concept: "Utilidad Neta", type: "thousands", monthly: buildMonthArray(-23.722, 5, 83.845, 1).concat(Array(6).fill(97.287)), total: 549.0, bold: true, isMajorSubtotal: true, border: true },
+                    ]
                 }
             ];
 
             const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-
             const formatValue = (val) => new Intl.NumberFormat('es-MX', { maximumFractionDigits: 0 }).format(val);
-
-            const formatPercent = (val, denominator) => {
-                if (!denominator || denominator === 0) return '0.0%';
-                return ((val / denominator) * 100).toFixed(1) + '%';
-            };
-
-            const getRowBgColor = (index, row) => {
-                if (row.isMajorSubtotal) return 'bg-slate-300';
+            const formatPercent = (val, denominator) => (!denominator || denominator === 0) ? '0.0%' : ((val / denominator) * 100).toFixed(1) + '%';
+            
+            // --- 3. Lógica de Zebra Restaurada ---
+            const getCellBgColor = (index, row) => {
+                if (row.isMajorSubtotal) return 'bg-slate-200';
                 if (row.highlight) return 'bg-gray-200';
+                // Zebra: Filas pares blancas, impares gris suave
                 return index % 2 === 0 ? 'bg-white' : 'bg-gray-100';
             };
+            
+            // Color para sub-filas (detalle)
+            const getSubRowBgColor = (subIndex) => {
+                // Zebra para el detalle: azul muy tenue vs azul un poco más visible
+                return subIndex % 2 === 0 ? 'bg-blue-50' : 'bg-blue-100';
+            };
 
-            // Color personalizado para números negativos
             const customRed = '#b63b49';
 
-            const renderRow = (row, index, sectionType, isSubRow = false) => {
-                const rowBg = isSubRow ? 'bg-blue-50' : getRowBgColor(index, row);
+            const renderRow = (row, index, sectionType, isSubRow = false, subIndex = 0) => {
                 const isExpanded = expandedRows[row.id];
                 const isNegativeTotal = row.total < 0;
                 const denominator = sectionType === 'volume' ? grandTotalVolYear : totalSalesYear;
+                
+                const dataCellBg = isSubRow ? getSubRowBgColor(subIndex) : getCellBgColor(index, row);
+                const noteCellBg = 'bg-transparent';
+
+                // --- 4. Bordes de División ---
+                // Si showMonths es true, agregamos bordes sólidos a todas las celdas de datos
+                const borderClass = showMonths 
+                    ? 'border border-slate-300' 
+                    : (row.highlight ? 'border-y border-gray-300' : 'border-b border-gray-200');
 
                 const getTextStyle = (val) => {
-                    if (isSubRow) return { color: '#475569' }; // slate-600
+                    if (isSubRow) return { color: '#475569' }; 
                     if (row.textRed || val < 0) return { color: customRed, fontWeight: 500 };
-                    return { color: '#1e293b' }; // slate-800
+                    return { color: '#1e293b' };
                 };
-
                 const getTotalTextStyle = () => {
-                    if (row.isMajorSubtotal) return { color: isNegativeTotal ? customRed : '#000000' };
+                    if (row.isMajorSubtotal) return { color: isNegativeTotal ? customRed : '#0f172a' };
                     if (row.highlight) return { color: '#000000' };
                     if (isNegativeTotal || row.textRed) return { color: customRed };
-                    return { color: '#0f172a' }; // slate-900
+                    return { color: '#0f172a' };
                 };
+
+                const notes = rowNotes[row.id];
 
                 const mainRow = (
                     <tr 
                         key={row.id} 
                         onClick={() => row.hasDetail && toggleRow(row.id)}
                         className={`
-                            border-b border-gray-300 hover:brightness-95 transition-none
-                            ${rowBg}
-                            ${row.border || row.isMajorSubtotal ? 'border-y-2 border-slate-400' : ''}
-                            ${row.hasDetail ? 'cursor-pointer select-none group' : ''}
+                            group transition-none
+                            ${row.hasDetail ? 'cursor-pointer select-none' : ''}
                         `}
                     >
-                        {/* Concepto */}
+                        {/* 1. NOTAS IZQUIERDA */}
+                        {!showMonths && (
+                            <td className={`w-[360px] p-0 relative border-none ${noteCellBg}`}>
+                                <SideNote note={notes?.left} align="left" />
+                            </td>
+                        )}
+
+                        {/* 2. CONCEPTO */}
                         <td className={`
-                            px-3 py-1.5 text-base font-medium border-r border-gray-300
+                            px-3 py-1.5 text-base font-medium
                             sticky left-0 z-30
-                            ${rowBg}
-                            ${row.highlight ? 'border-y border-gray-400' : ''}
-                            ${row.isMajorSubtotal ? '!border-y-2 !border-slate-400' : ''}
-                            shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]
+                            ${dataCellBg}
+                            ${borderClass}
+                            ${row.isMajorSubtotal ? '!border-y-2 !border-slate-300' : ''}
                         `} style={getTextStyle(1)}> 
                             <div className="flex items-center w-full justify-end text-right">
                                 {row.hasDetail && (
                                     <span className="mr-2 flex items-center justify-center w-5 h-5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors shadow-sm">
-                                        {isExpanded ? <ChevronDown size={14} strokeWidth={3} /> : <ChevronRight size={14} strokeWidth={3} />}
+                                        {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                                     </span>
                                 )}
                                 <span className={`whitespace-nowrap overflow-hidden text-ellipsis max-w-[300px] ${isSubRow ? 'pl-6 text-sm italic' : ''}`}>
@@ -205,32 +267,39 @@
                             </div>
                         </td>
 
-                        {/* Meses */}
+                        {/* 3. MESES */}
                         {showMonths && row.monthly.map((val, mIndex) => (
                             <td key={mIndex} 
-                                className={`px-1 py-1 text-right tabular-nums text-sm border-r border-gray-300/50 ${isSubRow ? 'text-xs' : ''}`}
+                                className={`px-1 py-1 text-right tabular-nums text-sm ${dataCellBg} ${borderClass} ${isSubRow ? 'text-xs' : ''}`}
                                 style={getTextStyle(val)}
                             >
                                 {formatValue(val)}
                             </td>
                         ))}
 
-                        {/* Total Año */}
+                        {/* 4. TOTAL */}
                         <td 
-                            className={`px-2 py-1 text-right font-bold tabular-nums text-base border-l-2 border-gray-400 ${row.highlight || row.isMajorSubtotal ? 'text-lg' : ''} ${isSubRow ? '!font-normal text-sm' : ''}`}
+                            className={`px-2 py-1 text-right font-bold tabular-nums text-base border-l-2 border-slate-300 ${dataCellBg} ${borderClass} ${row.isMajorSubtotal ? '!border-y-2 !border-slate-300 text-lg' : ''} ${isSubRow ? '!font-normal text-sm' : ''}`}
                             style={getTotalTextStyle()}
                         >
                             {formatValue(row.total)}
                         </td>
 
-                        {/* Columna % */}
+                        {/* 5. PORCENTAJE */}
                         <td className={`
-                            px-2 py-1 text-right tabular-nums text-sm border-l border-gray-300
+                            px-2 py-1 text-right tabular-nums text-sm border-l border-slate-300 ${dataCellBg} ${borderClass} ${row.isMajorSubtotal ? '!border-y-2 !border-slate-300' : ''}
                             ${row.isMajorSubtotal ? 'font-bold text-slate-900' : 'text-slate-600'}
                             ${isSubRow ? 'text-xs' : ''}
                         `}>
                             {formatPercent(row.total, denominator)}
                         </td>
+
+                        {/* 6. NOTAS DERECHA */}
+                        {!showMonths && (
+                            <td className={`w-[360px] p-0 relative border-none ${noteCellBg}`}>
+                                <SideNote note={notes?.right} align="right" />
+                            </td>
+                        )}
                     </tr>
                 );
 
@@ -238,86 +307,97 @@
                     return (
                         <React.Fragment key={row.id}>
                             {mainRow}
-                            {row.subRows.map((subRow, sIndex) => renderRow(subRow, index, sectionType, true))}
+                            {row.subRows.map((subRow, sIndex) => renderRow(subRow, index, sectionType, true, sIndex))}
                         </React.Fragment>
                     );
                 }
-
                 return mainRow;
             };
 
             return (
-                <div className="h-screen flex flex-col bg-white font-sans text-sm">
-                <div className="flex-1 flex flex-col overflow-hidden max-w-full mx-auto bg-white border border-gray-300">
+                <div className="flex flex-col h-full font-sans text-sm items-center">
                     
-                    <div className="bg-slate-900 text-white p-3 flex justify-between items-center z-50 shadow-md shrink-0">
-                    <h1 className="text-lg font-bold flex items-center gap-2 mr-8">
-                        <BarChart3 className="w-5 h-5" />
-                        QUIMICOS DEL CAUCA MEXICO Presupuesto 2026
-                    </h1>
-                    <div className="flex gap-2">
-                        <button 
-                        onClick={() => setShowMonths(!showMonths)}
-                        className="flex items-center gap-1 px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded border border-slate-600 transition-colors text-xs font-bold uppercase tracking-wide shadow"
-                        >
-                        {showMonths ? <ChevronLeft size={14}/> : <ChevronRight size={14}/>}
-                        {showMonths ? "Ocultar Meses" : "Abrir Detalle"}
-                        </button>
+                    {/* Header Principal */}
+                    <div className="w-full bg-slate-900 text-white py-4 px-8 flex justify-between items-center z-50 shrink-0 border-b border-slate-700 shadow-lg">
+                        <div className="flex-1 flex justify-start pl-8"> {/* 2. Título a la izquierda */}
+                            <h1 className="text-2xl font-bold flex items-center gap-3 tracking-wide text-gray-100 whitespace-nowrap">
+                                <BarChart3 className="w-7 h-7 text-blue-400" />
+                                QUIMICOS DEL CAUCA MEXICO <span className="text-slate-400 font-light ml-2">(Presupuesto 2026)</span>
+                            </h1>
+                        </div>
+                        
+                        {/* Controles Derecha */}
+                        <div>
+                            <button 
+                                onClick={() => setShowMonths(!showMonths)}
+                                className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded font-bold uppercase tracking-wide text-xs shadow-lg transition-transform active:scale-95 text-white border border-slate-600"
+                            >
+                                {showMonths ? <ChevronLeft size={16}/> : <ChevronRight size={16}/>}
+                                {showMonths ? "Ocultar Meses" : "Abrir Detalle"}
+                            </button>
+                        </div>
                     </div>
-                    </div>
 
-                    <div className="flex-1 overflow-auto relative">
-                    <table className="w-auto border-collapse text-slate-900">
-                        <thead className="bg-slate-900 sticky top-0 z-40 shadow-sm">
-                        <tr>
-                            <th scope="col" className="px-3 py-2 text-right font-medium tracking-wider w-80 sticky left-0 z-50 bg-slate-900 text-blue-50 border-r border-slate-700 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.5)]">
-                            Concepto
-                            </th>
-                            
-                            {showMonths && months.map((month) => (
-                            <th key={month} scope="col" className="px-1 py-1 text-right min-w-[55px] font-medium text-blue-50 border-r border-slate-700 bg-slate-900">
-                                {month}
-                            </th>
-                            ))}
+                    {/* Contenedor Principal */}
+                    <div className="flex-1 w-full overflow-auto flex justify-center items-start custom-scrollbar bg-gray-300 pt-4"> {/* 1. Corrección corte izq con mx-auto en tabla */}
+                        
+                        <table className={`border-collapse ${showMonths ? 'w-auto' : 'mx-auto'} mb-12 shadow-2xl`}>
+                            {/* Header Tabla */}
+                            <thead className="sticky top-0 z-50 shadow-xl"> 
+                                <tr>
+                                    {!showMonths && <th className="bg-gray-300 w-[360px]"></th>}
 
-                            <th scope="col" className={`px-2 py-1 text-right font-medium bg-slate-900 text-blue-50 min-w-[75px] border-l border-slate-600 leading-tight ${!showMonths ? 'text-sm' : ''}`}>
-                            Total<br/><span className="text-[11px] opacity-80">Año</span>
-                            </th>
+                                    <th className="px-3 py-3 text-right font-bold tracking-wider w-80 bg-slate-800 text-gray-200 border-r border-slate-600 rounded-tl text-sm">
+                                        Concepto
+                                    </th>
+                                    
+                                    {showMonths && months.map((month) => (
+                                        <th key={month} className="px-1 py-3 text-right min-w-[55px] font-bold border-r border-slate-600 bg-slate-800 text-gray-200 text-sm">
+                                            {month}
+                                        </th>
+                                    ))}
 
-                            <th scope="col" className="px-2 py-1 text-right font-medium bg-slate-900 text-blue-50 min-w-[60px] border-l border-slate-600">
-                            %
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {dataStructure.map((section, sIndex) => (
-                            <React.Fragment key={sIndex}>
-                            <tr className="bg-gray-200 border-y border-gray-400">
-                                <td 
-                                colSpan={showMonths ? 15 : 3} 
-                                className="px-3 py-2 font-bold text-slate-800 text-xl sticky left-0 z-30 bg-gray-200"
-                                >
-                                {section.category}
-                                </td>
-                            </tr>
+                                    <th className={`px-2 py-3 text-right font-bold bg-slate-800 text-gray-200 min-w-[90px] border-l border-slate-600 leading-tight text-sm`}>
+                                        Total Año
+                                    </th>
 
-                            {section.rows.map((row, rIndex) => renderRow(row, rIndex, section.sectionType))}
-                            </React.Fragment>
-                        ))}
-                        </tbody>
-                    </table>
+                                    <th className="px-2 py-3 text-right font-bold bg-slate-800 text-gray-200 min-w-[70px] border-l border-slate-600 rounded-tr text-sm">
+                                        %
+                                    </th>
+
+                                    {!showMonths && <th className="bg-gray-300 w-[360px]"></th>}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dataStructure.map((section, sIndex) => (
+                                    <React.Fragment key={sIndex}>
+                                        <tr className="group">
+                                            {!showMonths && <td className="bg-transparent border-none"></td>}
+                                            
+                                            <td 
+                                                colSpan={showMonths ? 15 : 3} 
+                                                className="px-3 py-4 font-bold text-slate-800 text-2xl bg-white border-x border-gray-300 shadow-sm"
+                                            >
+                                                {section.category}
+                                            </td>
+
+                                            {!showMonths && <td className="bg-transparent border-none"></td>}
+                                        </tr>
+                                        {section.rows.map((row, rIndex) => renderRow(row, rIndex, section.sectionType))}
+                                    </React.Fragment>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                     
-                    <div className="p-1.5 bg-gray-50 border-t border-gray-300 text-[10px] text-gray-500 flex justify-between shrink-0">
-                    <span>Proyección 2026</span>
-                    <span>Valores en Miles de USD | % sobre Ventas Totales (Financiero) o Volumen Total (Volumen)</span>
+                    {/* Footer */}
+                    <div className="w-full py-2 bg-slate-900 border-t border-slate-800 text-xs text-center text-slate-500 shrink-0">
+                        Proyección 2026 &bull; Valores en Miles de USD
                     </div>
-                </div>
                 </div>
             );
         };
 
-        // Renderizar en el DOM
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<FinancialReport />);
     </script>
